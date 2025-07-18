@@ -450,6 +450,55 @@ def procesar_hashrate(data):
         filas.append(fila)
     return pd.DataFrame(filas)
 
+""" info defilama """
+def procesar_tvl_aave(data, token): 
+    """
+    Procesa la información de protocolos AAVE con categoría 'Lending' y devuelve un DataFrame.
+    
+    Parámetros:
+        json_data (list or str): Lista de diccionarios (JSON parseado) o string JSON.
+        
+    Retorna:
+        pd.DataFrame: DataFrame con información detallada de los protocolos AAVE relevantes.
+    """
+    nombres_aave = {"AAVE V1", "AAVE V2", "AAVE V3", "AAVE Arc"}
+    protocolos_filtrados = []
+
+    for p in data:
+        if p.get("name") in nombres_aave and p.get("category") == "Lending":
+            protocolo = {
+                "id": p.get("id"),
+                "name": p.get("name"),
+                "description": p.get("description"),
+                "url": p.get("url"),
+                "symbol": p.get("symbol"),
+                "category": p.get("category"),
+                "chain": p.get("chain"),
+                "chains": p.get("chains"),
+                "tvl": p.get("tvl"),
+                "borrowed": p.get("chainTvls", {}).get("borrowed"),
+                "change_1h": p.get("change_1h"),
+                "change_1d": p.get("change_1d"),
+                "change_7d": p.get("change_7d"),
+                "audit_note": p.get("audit_note"),
+                "audits": p.get("audits"),
+                "logo": p.get("logo"),
+                "twitter": p.get("twitter"),
+                "methodology": p.get("methodology"),
+                "listedAt": p.get("listedAt"),
+                "parentProtocol": p.get("parentProtocol"),
+                "module": p.get("module"),
+                "forkedFrom": p.get("forkedFrom"),
+                "hallmarks": p.get("hallmarks"),
+                "slug": p.get("slug"),
+                "mcap": p.get("mcap"),
+            }
+            protocolos_filtrados.append(protocolo)
+
+    df = pd.DataFrame(protocolos_filtrados)
+    return df  
+
+
 def procesar_y_exportar(nombre_salida, token_list):
     configuracion = ENDPOINTS[nombre_salida]
     salidas = []
@@ -517,6 +566,10 @@ ENDPOINTS = {
     "top_volume": {
         "url": lambda token: f"https://api.arkm.com/token/volume/{token}?timeLast=30d&granularity=24h",
         "procesar": lambda datos, token: procesar_volume(datos, token)
+    },
+    "tvl_aave":{
+        "url": lambda token: f"https://api.llama.fi/protocols",
+        "procesar": lambda datos, token: procesar_tvl_aave(datos, token)
     }
 }
 

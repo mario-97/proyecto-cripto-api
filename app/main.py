@@ -71,10 +71,14 @@ async def startup_event():
 def job_otros_endpoints():
     print(f"[{datetime.utcnow()}] Ejecutando job otros endpoints cada 5 minuto")
     for tipo in etl.ENDPOINTS:
-        if tipo in ["transfers"]:
+        if tipo == "transfers":
             continue  # evitar repetir lo que ya maneja otro job
         dfs = []
         for token in TOKENS:
+            # Ejecutar tvl_aave solo si el token es 'aave'
+            if tipo == "tvl_aave" and token.lower() != "aave":
+                print(f"[{datetime.utcnow()}] Omitido 'tvl_aave' para token: {token}")
+                continue
             try:
                 url = etl.ENDPOINTS[tipo]["url"](token)
                 datos = etl.get_data_arkham.get_data_arkham(url)
@@ -86,6 +90,7 @@ def job_otros_endpoints():
         if dfs:
             df_concat = pd.concat(dfs, ignore_index=True)
             exportar.exportar_datos(df_concat, tipo)
+
 
 
 @app.get("/jobs")
@@ -101,4 +106,13 @@ def listar_jobs():
             "trigger": str(job.trigger)
         })
     return lista
+
+
+""" crear api la cual:
+ -consuma los datos avanzados de bitcoin desde el repositorio
+ -tome el ultimo valor del dia valido
+ -haga un analisis automatico de esas metricas
+ -devuelva un json con los resultados del analisis
+ -envie estos datos ya sea por un bot a telegram o que publique con un bot en twitter
+ """
  
