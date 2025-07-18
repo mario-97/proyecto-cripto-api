@@ -476,7 +476,7 @@ def procesar_tvl_aave(data, token):
                 "chain": p.get("chain"),
                 "chains": p.get("chains"),
                 "tvl": p.get("tvl"),
-                "borrowed": p.get("chainTvls", {}).get("borrowed"),
+                "borrowed": p.get("chainTvls", {}),
                 "change_1h": p.get("change_1h"),
                 "change_1d": p.get("change_1d"),
                 "change_7d": p.get("change_7d"),
