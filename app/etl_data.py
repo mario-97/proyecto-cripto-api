@@ -621,7 +621,7 @@ ENDPOINTS_BTC = {
     "btc_miner_outflows": { 
         "procesar": lambda datos: procesar_miner_outflow(datos)
     },
-    "btc_reserves": { 
+    "btc_miner_reserves": { 
         "procesar": lambda datos: procesar_miner_reserves(datos)
     }
 }
