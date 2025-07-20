@@ -465,6 +465,20 @@ def procesar_miner_outflow(data):
         filas.append(fila)
     return pd.DataFrame(filas)
 
+def procesar_miner_reserves(data):
+    """
+    Procesa los valores de ouflow de mineros, es decir, salidas de wallets de mineros a otras direcciones
+    """
+    filas = []
+    for item in data:
+        fila = {
+            "d": item.get("d"),   
+            "unixTs": item.get("unixTs"),
+            "reserves": item.get("reserves")
+        }
+        filas.append(fila)
+    return pd.DataFrame(filas)
+
 
 """ info defilama """
 def procesar_tvl_aave(data, token): 
@@ -606,6 +620,9 @@ ENDPOINTS_BTC = {
     },
     "btc_miner_outflows": { 
         "procesar": lambda datos: procesar_miner_outflow(datos)
+    },
+    "btc_reserves": { 
+        "procesar": lambda datos: procesar_miner_reserves(datos)
     }
 }
 

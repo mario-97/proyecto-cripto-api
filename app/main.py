@@ -36,6 +36,8 @@ def job_btc():
             datos = etl.get_data_arkham.get_btc_data("hashrate")
         elif tipo == "btc_miner_outflows":
             datos = etl.get_data_arkham.get_btc_data("out-flows")
+        elif tipo == "btc_miner_reserves":
+            datos = etl.get_data_arkham.get_btc_data("miner-reserves")
         else:
             datos = None
         
