@@ -24,22 +24,23 @@ def job_btc():
     print(f"[{datetime.utcnow()}] Ejecutando job BTC cada 1 horas")
     for tipo in etl.ENDPOINTS_BTC:
         dfs = []
-        for token in ["bitcoin"]:  # solo bitcoin
-            if tipo == "btc_price":
-                datos = etl.get_data_arkham.get_btc_data("btc-price")
-            elif tipo == "btc_mvrvz":
-                datos = etl.get_data_arkham.get_btc_data("mvrv-zscore")
-            elif tipo == "btc_nupl":
-                datos = etl.get_data_arkham.get_btc_data("nupl")
-            elif tipo == "btc_sopr":
-                datos = etl.get_data_arkham.get_btc_data("sopr")
-            elif tipo == "btc_hashrate":
-                datos = etl.get_data_arkham.get_btc_data("hashrate")
-            else:
-                datos = None
-            
-            if datos:
-                df = etl.ENDPOINTS_BTC[tipo]["procesar"](datos, token)
+        if tipo == "btc_price":
+            datos = etl.get_data_arkham.get_btc_data("btc-price")
+        elif tipo == "btc_mvrvz":
+            datos = etl.get_data_arkham.get_btc_data("mvrv-zscore")
+        elif tipo == "btc_nupl":
+            datos = etl.get_data_arkham.get_btc_data("nupl")
+        elif tipo == "btc_sopr":
+            datos = etl.get_data_arkham.get_btc_data("sopr")
+        elif tipo == "btc_hashrate":
+            datos = etl.get_data_arkham.get_btc_data("hashrate")
+        elif tipo == "btc_miner_outflows":
+            datos = etl.get_data_arkham.get_btc_data("out-flows")
+        else:
+            datos = None
+        
+        if datos:
+                df = etl.ENDPOINTS_BTC[tipo]["procesar"](datos)
                 dfs.append(df)
         if dfs:
             df_concat = pd.concat(dfs, ignore_index=True)
@@ -62,7 +63,7 @@ def job_transfers():
 # Scheduler setup
 @app.on_event("startup")
 async def startup_event():
-    scheduler.add_job(job_btc, 'interval', hours=1, id='btc_job')
+    scheduler.add_job(job_btc, 'interval', minutes=4, id='btc_job')
     scheduler.add_job(job_transfers, 'interval', minutes=10, id='transfers_job')
     scheduler.add_job(job_otros_endpoints, 'interval', minutes=3, id='otros_endpoints_job')  
     scheduler.start()

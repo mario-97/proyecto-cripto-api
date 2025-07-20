@@ -450,6 +450,22 @@ def procesar_hashrate(data):
         filas.append(fila)
     return pd.DataFrame(filas)
 
+
+def procesar_miner_outflow(data):
+    """
+    Procesa los valores de ouflow de mineros, es decir, salidas de wallets de mineros a otras direcciones
+    """
+    filas = []
+    for item in data:
+        fila = {
+            "d": item.get("d"),   
+            "unixTs": item.get("unixTs"),
+            "outFlows": item.get("outFlows")
+        }
+        filas.append(fila)
+    return pd.DataFrame(filas)
+
+
 """ info defilama """
 def procesar_tvl_aave(data, token): 
     """
@@ -497,7 +513,6 @@ def procesar_tvl_aave(data, token):
 
     df = pd.DataFrame(protocolos_filtrados)
     return df  
-
 
 def procesar_y_exportar(nombre_salida, token_list):
     configuracion = ENDPOINTS[nombre_salida]
@@ -575,19 +590,22 @@ ENDPOINTS = {
 
 ENDPOINTS_BTC = {
      "btc_price": { 
-        "procesar": lambda datos, token: procesar_btc_price(datos)
+        "procesar": lambda datos: procesar_btc_price(datos)
     },
     "btc_mvrvz": { 
-        "procesar": lambda datos, token: procesar_mvrv_zscore(datos)
+        "procesar": lambda datos: procesar_mvrv_zscore(datos)
     },
     "btc_nupl": { 
-        "procesar": lambda datos, token: procesar_nupl(datos)
+        "procesar": lambda datos: procesar_nupl(datos)
     },
     "btc_sopr": { 
-        "procesar": lambda datos, token: procesar_sopr(datos)
+        "procesar": lambda datos: procesar_sopr(datos)
     },
     "btc_hashrate": { 
-        "procesar": lambda datos, token: procesar_hashrate(datos)
+        "procesar": lambda datos: procesar_hashrate(datos)
+    },
+    "btc_miner_outflows": { 
+        "procesar": lambda datos: procesar_miner_outflow(datos)
     }
 }
 

@@ -94,20 +94,4 @@ def get_btc_data(value):
         print(f"Error al obtener datos de {value}:", e)
         return None
  
-    """
-    Consulta el HASHRATE de BTC desde bitcoin-data.com
-    Devuelve una lista con fecha y HASHRATE.
-    """
-    url = "https://bitcoin-data.com/v1/hashrate"
-    headers = {
-        "accept": "application/hal+json"
-    }
-
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        return response.json()
-
-    except requests.RequestException as e:
-        print("Error al obtener el HASHRATE:", e)
-        return None
+    
